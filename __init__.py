@@ -215,8 +215,14 @@ class AdaptiveProjectedGuidanceFunction:
             cond = args["cond"]
             uncond = args["uncond"]
         cfg_scale = args["cond_scale"]
+        sigma = args["sigma"][0].item()
         step = args["model"].model_sampling.timestep(args["sigma"])[0].item()
-        x = args["input"]
+        x_orig = args["input"]
+        if self.mode == "vpred":
+            sigma = step
+            x = x_orig / (sigma * sigma + 1.0)
+            cond = ((x - (x_orig - cond)) * (sigma**2 + 1.0) ** 0.5) / (sigma)
+            uncond = ((x - (x_orig - uncond)) * (sigma**2 + 1.0) ** 0.5) / (sigma)
 
         if self.current_step < step:
             self.current_step = 999.0
@@ -249,7 +255,9 @@ class AdaptiveProjectedGuidanceFunction:
 
         pred = cond + (cfg_scale - 1) * (diff_orthogonal + self.eta * diff_parallel)
         if "denoised" == self.mode:
-            pred =  x - pred
+            pred = x_orig - pred
+        elif "vpred" == self.mode:
+            pred = x_orig - (x - pred * sigma / (sigma * sigma + 1.0) ** 0.5)
         return pred
 
 
@@ -262,7 +270,7 @@ class AdaptiveProjectedGuidance:
                 "momentum": ("FLOAT", {"default": 0.5, "min": -1.0, "max": 1.0, "step": 0.01}),
                 "eta": ("FLOAT", {"default": 1, "min": 0.0, "max": 1.0, "step": 0.01}),
                 "norm_threshold": ("FLOAT", {"default": 15.0, "min": 0.0, "max": 50.0, "step": 0.1}),
-                "mode": (["normal", "denoised"],),
+                "mode": (["normal", "denoised", "vpred"],),
                 "adaptive_momentum": ("FLOAT", {"default": 0.18, "min": 0, "max": 1.0, "step": 0.01}),
             },
         }

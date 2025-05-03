@@ -4,7 +4,7 @@ An implementation of adaptive guidance for ComfyUI
 
 See https://bcv-uniandes.github.io/adaptiveguidance-wp/
 
-Import [this workflow](workflows/AGExample.json?raw=1) into ComfyUI to compare Adaptive Guidance vs. normal CFG.
+Import [this workflow](example_workflows/AGExample.json?raw=1) into ComfyUI to compare Adaptive Guidance vs. normal CFG.
 
 ## What
 
