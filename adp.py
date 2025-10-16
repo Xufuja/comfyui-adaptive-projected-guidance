@@ -8,7 +8,6 @@ def project(a, b):
     a_orth = a - a_par
     return a_par.to(dtype), a_orth.to(dtype)
 
-
 class AdaptiveProjectedGuidanceFunction:
     def __init__(self, momentum, eta, norm_threshold, adaptive_momentum=0, mode="normal"):
         self.eta = eta
@@ -72,7 +71,6 @@ class AdaptiveProjectedGuidanceFunction:
         elif "vpred" == self.mode:
             pred = x_orig - (x - pred * sigma / (sigma * sigma + 1.0) ** 0.5)
         return pred
-
 
 class AdaptiveProjectedGuidance:
     @classmethod

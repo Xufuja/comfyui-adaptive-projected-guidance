@@ -1,6 +1,5 @@
 from . import adp
 
-
 NODE_CLASS_MAPPINGS = {
     "AdaptiveProjectedGuidance": adp.AdaptiveProjectedGuidance,
 }
